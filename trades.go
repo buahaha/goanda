@@ -4,43 +4,46 @@ package goanda
 
 import (
 	"encoding/json"
+	"net/url"
 	"time"
 )
 
 type ReceivedTrades struct {
 	LastTransactionID string `json:"lastTransactionID"`
 	Trades            []struct {
-		CurrentUnits string    `json:"currentUnits"`
-		Financing    string    `json:"financing"`
-		ID           string    `json:"id"`
-		InitialUnits string    `json:"initialUnits"`
-		Instrument   string    `json:"instrument"`
-		OpenTime     time.Time `json:"openTime"`
-		Price        string    `json:"price"`
-		RealizedPL   string    `json:"realizedPL"`
-		State        string    `json:"state"`
-		UnrealizedPL string    `json:"unrealizedPL"`
+		CurrentUnits     string            `json:"currentUnits"`
+		Financing        string            `json:"financing"`
+		ID               string            `json:"id"`
+		InitialUnits     string            `json:"initialUnits"`
+		Instrument       string            `json:"instrument"`
+		OpenTime         time.Time         `json:"openTime"`
+		Price            string            `json:"price"`
+		RealizedPL       string            `json:"realizedPL"`
+		State            string            `json:"state"`
+		UnrealizedPL     string            `json:"unrealizedPL"`
+		ClientExtensions *ClientExtensions `json:"clientExtensions,omitempty"`
 	} `json:"trades"`
 }
 
 type ReceivedTrade struct {
 	LastTransactionID string `json:"lastTransactionID"`
 	Trades            struct {
-		CurrentUnits string    `json:"currentUnits"`
-		Financing    string    `json:"financing"`
-		ID           string    `json:"id"`
-		InitialUnits string    `json:"initialUnits"`
-		Instrument   string    `json:"instrument"`
-		OpenTime     time.Time `json:"openTime"`
-		Price        string    `json:"price"`
-		RealizedPL   string    `json:"realizedPL"`
-		State        string    `json:"state"`
-		UnrealizedPL string    `json:"unrealizedPL"`
+		CurrentUnits     string            `json:"currentUnits"`
+		Financing        string            `json:"financing"`
+		ID               string            `json:"id"`
+		InitialUnits     string            `json:"initialUnits"`
+		Instrument       string            `json:"instrument"`
+		OpenTime         time.Time         `json:"openTime"`
+		Price            string            `json:"price"`
+		RealizedPL       string            `json:"realizedPL"`
+		State            string            `json:"state"`
+		UnrealizedPL     string            `json:"unrealizedPL"`
+		ClientExtensions *ClientExtensions `json:"clientExtensions,omitempty"`
 	} `json:"trade"`
 }
 
 type CloseTradePayload struct {
-	Units string
+	Units string `json:"units"`
 }
 
 type ModifiedTrade struct {
@@ -67,7 +70,6 @@ type ModifiedTrade struct {
 		Instrument     string `json:"instrument"`
 		Units          string `json:"units"`
 		Price          string `json:"price"`
-		FullPrice      string `json:"fullPrice"`
 		PL             string `json:"pl"`
 		Financing      string `json:"financing"`
 		Commission     string `json:"commission"`
@@ -112,6 +114,35 @@ type ModifiedTrade struct {
 	LastTransactionID     string   `json:"lastTransactionID"`
 }
 
+type ClientExtension struct {
+	ClientExtensions *ClientExtensions `json:"clientExtensions"`
+}
+
+type ClientExtensions struct {
+	Comment string `json:"comment"`
+	Tag     string `json:"tag"`
+	ID      string `json:"id"`
+}
+
+type CreatedClientExtensions struct {
+	LastTransactionID                      string   `json:"lastTransactionID"`
+	RelatedTransactionIDs                  []string `json:"relatedTransactionIDs"`
+	TradeClientExtensionsModifyTransaction struct {
+		AccountID                   string    `json:"accountID"`
+		BatchID                     string    `json:"batchID"`
+		ID                          string    `json:"id"`
+		Time                        time.Time `json:"time"`
+		TradeClientExtensionsModify struct {
+			Comment string `json:"comment"`
+			ID      string `json:"id"`
+			Tag     string `json:"tag"`
+		} `json:"tradeClientExtensionsModify"`
+		TradeID string `json:"tradeID"`
+		Type    string `json:"type"`
+		UserID  int    `json:"userID"`
+	} `json:"tradeClientExtensionsModifyTransaction"`
+}
+
 func (c *OandaConnection) GetTradesForInstrument(instrument string) ReceivedTrades {
 	endpoint := "/accounts/" + c.accountID + "/trades" + "?instrument=" + instrument
 
@@ -141,11 +172,28 @@ func (c *OandaConnection) GetTrade(ticket string) ReceivedTrade {
 
 // Default is close the whole position using the string "ALL" in body.units
 func (c *OandaConnection) ReduceTradeSize(ticket string, body CloseTradePayload) ModifiedTrade {
-	endpoint := "/accounts/" + c.accountID + "/trades/" + ticket
+	ticket = url.QueryEscape(ticket)
+	endpoint := "/accounts/" + c.accountID + "/trades/" + ticket + "/close"
 	jsonBody, err := json.Marshal(body)
 	checkErr(err)
 	response := c.Update(endpoint, jsonBody)
 	data := ModifiedTrade{}
+	unmarshalJson(response, &data)
+	return data
+}
+
+// SetClientExtensions add client extensions to trade
+//
+// possible combinations are id, tag and comment
+// while the most you can get using id which let you
+// specify it prefixed with @ like '@my_id' to get trade using this unique id.
+// ID must be unique across acount and all instruments.
+func (c *OandaConnection) SetClientExtensions(ticket string, clientExtensions ClientExtension) CreatedClientExtensions {
+	endpoint := "/accounts/" + c.accountID + "/trades/" + ticket + "/clientExtensions"
+	jsonBody, err := json.Marshal(clientExtensions)
+	checkErr(err)
+	response := c.Update(endpoint, jsonBody)
+	data := CreatedClientExtensions{}
 	unmarshalJson(response, &data)
 	return data
 }
