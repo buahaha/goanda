@@ -22,7 +22,7 @@ type OrderBody struct {
 	Units            int              `json:"units"`
 	Instrument       string           `json:"instrument"`
 	TimeInForce      string           `json:"timeInForce"`
-	GTDTime          time.Time        `json:"gtdTime"`
+	GTDTime          string           `json:"gtdTime"`
 	Type             string           `json:"type"`
 	PositionFill     string           `json:"positionFill,omitempty"`
 	Price            string           `json:"price,omitempty"`

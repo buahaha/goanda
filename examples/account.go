@@ -24,7 +24,7 @@ func getAccountDetails() {
 	accountInstruments := oanda.GetAccountInstruments("101-011-6559702-001")
 	spew.Dump(accountInstruments)
 
-	accountSummary := oanda.GetAccountSummary("101-011-6559702-001")
+	accountSummary := oanda.GetAccountSummary()
 	spew.Dump(accountSummary)
 
 	account := oanda.GetAccount("101-011-6559702-003")

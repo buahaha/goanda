@@ -19,7 +19,7 @@ func placeLimitOrder() {
 	oanda := goanda.NewConnection(accountID, key, false)
 	order := goanda.OrderPayload{
 		Order: goanda.OrderBody{
-			Units:        "100",
+			Units:        100,
 			Instrument:   "EUR_USD",
 			TimeInForce:  "FOK",
 			Type:         "LIMIT",

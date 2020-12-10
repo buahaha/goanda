@@ -19,7 +19,7 @@ func placeMarketOrder() {
 	oanda := goanda.NewConnection(accountID, key, false)
 	order := goanda.OrderPayload{
 		Order: goanda.OrderBody{
-			Units:        "10000",
+			Units:        10000,
 			Instrument:   "EUR_USD",
 			TimeInForce:  "GTC",
 			Type:         "MARKET",
