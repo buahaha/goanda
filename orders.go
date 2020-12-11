@@ -13,17 +13,23 @@ type OnFill struct {
 }
 
 type OrderBody struct {
-	Units            int              `json:"units"`
-	Instrument       string           `json:"instrument"`
-	TimeInForce      string           `json:"timeInForce"`
-	GTDTime          string           `json:"gtdTime"`
-	Type             string           `json:"type"`
-	PositionFill     string           `json:"positionFill,omitempty"`
-	Price            string           `json:"price,omitempty"`
-	TakeProfitOnFill *OnFill          `json:"takeProfitOnFill,omitempty"`
-	StopLossOnFill   *OnFill          `json:"stopLossOnFill,omitempty"`
-	ClientExtensions *ClientExtension `json:"clientExtensions,omitempty"`
-	TradeID          string           `json:"tradeId,omitempty"`
+	Units            int                    `json:"units"`
+	Instrument       string                 `json:"instrument"`
+	TimeInForce      string                 `json:"timeInForce"`
+	GTDTime          string                 `json:"gtdTime,omitempty"`
+	Type             string                 `json:"type"`
+	PositionFill     string                 `json:"positionFill,omitempty"`
+	Price            string                 `json:"price,omitempty"`
+	TakeProfitOnFill *OnFill                `json:"takeProfitOnFill,omitempty"`
+	StopLossOnFill   *OnFill                `json:"stopLossOnFill,omitempty"`
+	ClientExtensions *OrderClientExtensions `json:"clientExtensions,omitempty"`
+	TradeID          string                 `json:"tradeId,omitempty"`
+}
+
+type OrderClientExtensions struct {
+	Comment string `json:"comment,omitempty"`
+	Tag     string `json:"tag,omitempty"`
+	ID      string `json:"id,omitempty"`
 }
 
 type OrderPayload struct {
