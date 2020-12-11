@@ -7,12 +7,6 @@ import (
 	"time"
 )
 
-type OrderExtensions struct {
-	Comment string `json:"comment,omitempty"`
-	ID      string `json:"id,omitempty"`
-	Tag     string `json:"tag,omitempty"`
-}
-
 type OnFill struct {
 	TimeInForce string `json:"timeInForce,omitempty"`
 	Price       string `json:"price,omitempty"` // must be a string for float precision
@@ -28,7 +22,7 @@ type OrderBody struct {
 	Price            string           `json:"price,omitempty"`
 	TakeProfitOnFill *OnFill          `json:"takeProfitOnFill,omitempty"`
 	StopLossOnFill   *OnFill          `json:"stopLossOnFill,omitempty"`
-	ClientExtensions *OrderExtensions `json:"clientExtensions,omitempty"`
+	ClientExtensions *ClientExtension `json:"clientExtensions,omitempty"`
 	TradeID          string           `json:"tradeId,omitempty"`
 }
 
