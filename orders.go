@@ -91,6 +91,7 @@ type OrderInfo struct {
 	TriggerCondition string    `json:"triggerCondition"`
 	Type             string    `json:"type"`
 	Units            string    `json:"units,omitempty"`
+	TradeID          string    `json:"tradeID"`
 }
 
 type RetrievedOrders struct {
