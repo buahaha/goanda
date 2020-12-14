@@ -3,7 +3,6 @@ package goanda
 import (
 	"bytes"
 	"net/http"
-	"time"
 )
 
 type Headers struct {
@@ -72,7 +71,7 @@ func NewConnection(accountID string, token string, live bool) *OandaConnection {
 // TODO: include params as a second option
 func (c *OandaConnection) Request(endpoint string) []byte {
 	client := http.Client{
-		Timeout: time.Second * 15, // 5 sec timeout
+		// Timeout: time.Second * 15, // 5 sec timeout
 	}
 
 	url := createUrl(c.hostname, endpoint)
@@ -88,7 +87,7 @@ func (c *OandaConnection) Request(endpoint string) []byte {
 
 func (c *OandaConnection) Send(endpoint string, data []byte) []byte {
 	client := http.Client{
-		Timeout: time.Second * 15, // 5 sec timeout
+		// Timeout: time.Second * 15, // 5 sec timeout
 	}
 
 	url := createUrl(c.hostname, endpoint)
@@ -104,7 +103,7 @@ func (c *OandaConnection) Send(endpoint string, data []byte) []byte {
 
 func (c *OandaConnection) Update(endpoint string, data []byte) []byte {
 	client := http.Client{
-		Timeout: time.Second * 15,
+		// Timeout: time.Second * 15,
 	}
 
 	url := createUrl(c.hostname, endpoint)

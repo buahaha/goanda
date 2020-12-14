@@ -57,3 +57,12 @@ func (c *OandaConnection) GetPricingForInstruments(instruments []string) Pricing
 	unmarshalJson(response, &data)
 	return data
 }
+
+// func (c *OandaConnection) GetPricingStream(instruments []string) []byte {
+// 	instrumentString := strings.Join(instruments, ",")
+// 	endpoint := "/accounts/" + c.accountID + "/pricing/stream?instruments=" + url.QueryEscape(instrumentString)
+
+// 	response := c.Request(endpoint)
+// 	response
+// 	return response
+// }
